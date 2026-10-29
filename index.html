@@ -1,0 +1,679 @@
+<title>Condo Hub</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&display=swap">
+
+<style>
+  /* Layout: full-bleed dark game portal, server cards in a grid */
+  :root {
+    --bg:       #0a0c10;
+    --bg2:      #12151c;
+    --bg3:      #1a1e28;
+    --border:   rgba(255,255,255,0.07);
+    --fg:       #e8eaf0;
+    --fg2:      #8b91a6;
+    --accent:   #4f8bff;
+    --accent2:  #2d5fcc;
+    --green:    #22c55e;
+    --green-bg: rgba(34,197,94,0.12);
+    --red:      #ef4444;
+    --font-hd:  'Rajdhani', 'Arial Narrow', Arial, sans-serif;
+    --font-ui:  'Inter', system-ui, sans-serif;
+    color-scheme: dark;
+  }
+
+  /* deliberately single dark theme — neon portal aesthetic */
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    height: 100%;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--font-ui);
+    font-size: 15px;
+    line-height: 1.5;
+    overflow-x: hidden;
+  }
+
+  body {
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    padding-block: 0;
+  }
+
+  /* ── HEADER ── */
+  .site-header {
+    position: sticky;
+    top: env(safe-area-inset-top, 0px);
+    z-index: 100;
+    background: rgba(10,12,16,0.88);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0 0 auto;
+    height: env(safe-area-inset-top, 0px);
+    z-index: 101;
+    background: rgba(10,12,16,0.95);
+  }
+
+  .header-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding-block: 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .logo {
+    font-family: var(--font-hd);
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: var(--fg);
+    text-transform: uppercase;
+    line-height: 1;
+  }
+
+  .logo span {
+    color: var(--accent);
+  }
+
+  .live-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: var(--green-bg);
+    border: 1px solid rgba(34,197,94,0.25);
+    color: var(--green);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 4px;
+    margin-left: auto;
+  }
+
+  .live-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--green);
+    animation: pulse 1.8s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%       { opacity: 0.4; transform: scale(0.7); }
+  }
+
+  /* ── HERO ── */
+  .hero {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding-block: 52px 36px;
+    text-align: center;
+  }
+
+  .hero-eyebrow {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 14px;
+  }
+
+  .hero h1 {
+    font-family: var(--font-hd);
+    font-size: clamp(2.4rem, 6vw, 4rem);
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    line-height: 1.05;
+    text-wrap: balance;
+    color: var(--fg);
+    margin-bottom: 16px;
+  }
+
+  .hero h1 em {
+    font-style: normal;
+    color: var(--accent);
+  }
+
+  .hero-sub {
+    color: var(--fg2);
+    font-size: 0.95rem;
+    max-width: 420px;
+    margin: 0 auto 28px;
+  }
+
+  .hero-stat-row {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+
+  .hero-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+  }
+
+  .hero-stat .num {
+    font-family: var(--font-hd);
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--fg);
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+
+  .hero-stat .lbl {
+    font-size: 0.7rem;
+    color: var(--fg2);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  /* ── SERVERS GRID ── */
+  .servers-section {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding-bottom: 64px;
+  }
+
+  .section-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--fg2);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-label::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .server-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr));
+    gap: 18px;
+  }
+
+  /* ── SERVER CARD ── */
+  .server-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: border-color 0.2s, transform 0.2s;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .server-card:hover {
+    border-color: rgba(79,139,255,0.35);
+    transform: translateY(-2px);
+  }
+
+  .card-banner {
+    position: relative;
+    aspect-ratio: 16/7;
+    overflow: hidden;
+    background: var(--bg3);
+  }
+
+  .card-banner img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    opacity: 0.85;
+  }
+
+  .card-banner-fallback {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #0f1422 0%, #1a2040 100%);
+  }
+
+  .banner-placeholder-icon {
+    font-size: 2.5rem;
+    opacity: 0.25;
+  }
+
+  .status-chip {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 4px;
+    backdrop-filter: blur(6px);
+  }
+
+  .status-chip.available {
+    background: rgba(34,197,94,0.2);
+    border: 1px solid rgba(34,197,94,0.4);
+    color: var(--green);
+  }
+
+  .status-chip.full {
+    background: rgba(239,68,68,0.18);
+    border: 1px solid rgba(239,68,68,0.35);
+    color: var(--red);
+  }
+
+  .card-body {
+    padding: 16px 18px 18px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .card-title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .card-title {
+    font-family: var(--font-hd);
+    font-size: 1.2rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--fg);
+    line-height: 1;
+  }
+
+  .server-num {
+    font-size: 0.68rem;
+    color: var(--fg2);
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    padding: 2px 7px;
+    border-radius: 3px;
+    letter-spacing: 0.08em;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  /* player avatars */
+  .player-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .avatars {
+    display: flex;
+  }
+
+  .avatars img {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid var(--bg2);
+    margin-right: -8px;
+    object-fit: cover;
+    background: var(--bg3);
+  }
+
+  .avatars img:last-child { margin-right: 0; }
+
+  .player-count {
+    margin-left: 14px;
+    font-variant-numeric: tabular-nums;
+    color: var(--fg2);
+    font-size: 0.82rem;
+  }
+
+  .player-count strong {
+    color: var(--fg);
+    font-weight: 600;
+  }
+
+  .join-btn {
+    display: block;
+    width: 100%;
+    padding: 11px;
+    background: var(--accent);
+    color: #fff;
+    font-family: var(--font-hd);
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.15s, opacity 0.15s;
+    margin-top: auto;
+  }
+
+  .join-btn:hover { background: var(--accent2); }
+  .join-btn:active { opacity: 0.85; }
+  .join-btn.disabled {
+    background: var(--bg3);
+    color: var(--fg2);
+    cursor: not-allowed;
+    border: 1px solid var(--border);
+  }
+
+  /* ── FOOTER ── */
+  .site-footer {
+    border-top: 1px solid var(--border);
+    text-align: center;
+    padding-block: 28px;
+    color: var(--fg2);
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+  }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(4px);
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+  }
+
+  .modal-overlay.open {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .modal {
+    background: var(--bg2);
+    border: 1px solid rgba(79,139,255,0.3);
+    border-radius: 12px;
+    padding: 32px 28px;
+    max-width: 360px;
+    width: 100%;
+    text-align: center;
+    transform: translateY(10px);
+    transition: transform 0.2s;
+  }
+
+  .modal-overlay.open .modal { transform: translateY(0); }
+
+  .modal-icon {
+    font-size: 2.2rem;
+    margin-bottom: 14px;
+    display: block;
+  }
+
+  .modal h2 {
+    font-family: var(--font-hd);
+    font-size: 1.4rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .modal p {
+    color: var(--fg2);
+    font-size: 0.88rem;
+    line-height: 1.55;
+    margin-bottom: 22px;
+  }
+
+  .modal-actions {
+    display: flex;
+    gap: 10px;
+  }
+
+  .modal-actions a, .modal-actions button {
+    flex: 1;
+    padding: 11px;
+    border-radius: 6px;
+    font-family: var(--font-hd);
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    transition: background 0.15s;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+  }
+  .btn-primary:hover { background: var(--accent2); }
+
+  .btn-secondary {
+    background: var(--bg3);
+    color: var(--fg2);
+    border: 1px solid var(--border) !important;
+  }
+  .btn-secondary:hover { color: var(--fg); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 500px) {
+    .hero { padding-block: 36px 28px; }
+    .hero-stat-row { gap: 20px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .live-dot { animation: none; }
+    .server-card { transition: none; }
+    .modal, .modal-overlay { transition: none; }
+  }
+</style>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="header-inner">
+    <div class="logo">Condo<span>Hub</span></div>
+    <div class="live-badge">
+      <div class="live-dot"></div>
+      Live
+    </div>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <p class="hero-eyebrow">Roblox · Private Servers</p>
+  <h1>Choose Your <em>Server</em></h1>
+  <p class="hero-sub">Pick a private server and jump in. Slots are limited — join fast.</p>
+  <div class="hero-stat-row">
+    <div class="hero-stat">
+      <span class="num" id="total-online">0</span>
+      <span class="lbl">Online</span>
+    </div>
+    <div class="hero-stat">
+      <span class="num" id="server-count">0</span>
+      <span class="lbl">Servers</span>
+    </div>
+    <div class="hero-stat">
+      <span class="num" id="total-slots">0</span>
+      <span class="lbl">Total Slots</span>
+    </div>
+  </div>
+</section>
+
+<!-- SERVERS -->
+<main class="servers-section">
+  <div class="section-label">Available Servers</div>
+  <div class="server-grid" id="server-grid"></div>
+</main>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  &copy; 2026 CondoHub &nbsp;·&nbsp; Not affiliated with Roblox Corporation
+</footer>
+
+<!-- JOIN MODAL -->
+<div class="modal-overlay" id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <div class="modal">
+    <span class="modal-icon">🎮</span>
+    <h2 id="modal-title">Joining <span id="modal-server-name">Server</span></h2>
+    <p>You're about to open Roblox and connect to this private server. Make sure Roblox is installed.</p>
+    <div class="modal-actions">
+      <a id="modal-join-link" href="#" target="_blank" rel="noopener" class="btn-primary">Open Roblox</a>
+      <button class="btn-secondary" id="modal-cancel">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ── SERVER DATA ── swap join links here
+  const SERVERS = [
+    {
+      id: 1,
+      name: "Server 01",
+      banner: "", // put an image URL here or leave blank for fallback
+      online: 14,
+      max: 20,
+      // SWAP THIS with your real Roblox private server link:
+      link: "https://www.roblox.com/games/YOUR_GAME_ID?privateServerLinkCode=YOUR_CODE_1",
+      avatars: [
+        "https://tr.rbxcdn.com/30DAY-AvatarHeadshot-A4F764CB5B7A62140A826DCBA9EE5F7E-Png/150/150/AvatarHeadshot/Webp/noFilter",
+        "https://tr.rbxcdn.com/30DAY-AvatarHeadshot-456E27ADA99A21CADD2590306EE214A6-Png/150/150/AvatarHeadshot/Webp/noFilter",
+        "https://tr.rbxcdn.com/30DAY-AvatarHeadshot-E5988C142C147FC9D3D0DA0C7736C712-Png/150/150/AvatarHeadshot/Webp/noFilter",
+      ]
+    },
+    {
+      id: 2,
+      name: "Server 02",
+      banner: "",
+      online: 2,
+      max: 20,
+      // SWAP THIS with your real Roblox private server link:
+      link: "https://www.roblox.com/games/YOUR_GAME_ID?privateServerLinkCode=YOUR_CODE_2",
+      avatars: [
+        "https://tr.rbxcdn.com/30DAY-AvatarHeadshot-0C6CBD98ADBB8879842179209E12BF5D-Png/150/150/AvatarHeadshot/Webp/noFilter",
+        "https://tr.rbxcdn.com/30DAY-AvatarHeadshot-2968EC43814C0D3ACB51889553F6F0D5-Png/150/150/AvatarHeadshot/Webp/noFilter",
+      ]
+    },
+  ];
+
+  // ── RENDER ──
+  const grid = document.getElementById('server-grid');
+
+  let totalOnline = 0, totalSlots = 0;
+
+  SERVERS.forEach(srv => {
+    const full = srv.online >= srv.max;
+    totalOnline += srv.online;
+    totalSlots  += srv.max;
+
+    const card = document.createElement('div');
+    card.className = 'server-card';
+
+    const bannerHTML = srv.banner
+      ? `<img src="${srv.banner}" alt="${srv.name} banner" loading="lazy">`
+      : `<div class="card-banner-fallback"><div class="banner-placeholder-icon">🏢</div></div>`;
+
+    const avatarsHTML = srv.avatars.slice(0, 4)
+      .map(u => `<img src="${u}" alt="player" loading="lazy">`)
+      .join('');
+
+    card.innerHTML = `
+      <div class="card-banner">
+        ${bannerHTML}
+        <div class="status-chip ${full ? 'full' : 'available'}">${full ? 'Full' : 'Available'}</div>
+      </div>
+      <div class="card-body">
+        <div class="card-title-row">
+          <div class="card-title">${srv.name}</div>
+          <div class="server-num">#${String(srv.id).padStart(2,'0')}</div>
+        </div>
+        <div class="player-row">
+          <div class="avatars">${avatarsHTML}</div>
+          <div class="player-count"><strong>${srv.online}</strong> / ${srv.max} Online</div>
+        </div>
+        <button
+          class="join-btn${full ? ' disabled' : ''}"
+          data-link="${srv.link}"
+          data-name="${srv.name}"
+          ${full ? 'disabled' : ''}
+          aria-label="Join ${srv.name}"
+        >${full ? 'Server Full' : 'Join Server'}</button>
+      </div>
+    `;
+
+    grid.appendChild(card);
+  });
+
+  // stats
+  document.getElementById('total-online').textContent  = totalOnline;
+  document.getElementById('server-count').textContent  = SERVERS.length;
+  document.getElementById('total-slots').textContent   = totalSlots;
+
+  // ── MODAL ──
+  const overlay    = document.getElementById('modal');
+  const modalName  = document.getElementById('modal-server-name');
+  const modalLink  = document.getElementById('modal-join-link');
+  const cancelBtn  = document.getElementById('modal-cancel');
+
+  function openModal(name, link) {
+    modalName.textContent = name;
+    modalLink.href = link;
+    overlay.classList.add('open');
+  }
+
+  function closeModal() {
+    overlay.classList.remove('open');
+  }
+
+  document.addEventListener('click', e => {
+    const btn = e.target.closest('.join-btn:not(.disabled)');
+    if (btn) {
+      e.preventDefault();
+      openModal(btn.dataset.name, btn.dataset.link);
+    }
+  });
+
+  cancelBtn.addEventListener('click', closeModal);
+
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay) closeModal();
+  });
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeModal();
+  });
+</script>
